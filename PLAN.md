@@ -10,6 +10,8 @@ The code should be structured using SOLID principles, avoid use of a data store 
 Ask questions about data visualisations and what to do with the data (beyond the simpler timeline view).
 
 All filtered views must be reachable via direct URL, and all filter/sort options must have a "clear" option.
+
+I'd like to deploy this to Github Pages, where I'll point a subdomain at it.  So the deployment process will require a build/compile step, followed by pushing the dist folder contents to a branch.  A similar project I have details the build/deploy commands in https://github.com/jasonbstanding/vue-ticket-thing/blob/main/README.md - it would be nice if I could assemble something a bit easier.
 ---
 
 ## Tech Stack
