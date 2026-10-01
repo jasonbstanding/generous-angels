@@ -12,6 +12,8 @@ Ask questions about data visualisations and what to do with the data (beyond the
 All filtered views must be reachable via direct URL, and all filter/sort options must have a "clear" option.
 
 I'd like to deploy this to Github Pages, where I'll point a subdomain at it.  So the deployment process will require a build/compile step, followed by pushing the dist folder contents to a branch.  A similar project I have details the build/deploy commands in https://github.com/jasonbstanding/vue-ticket-thing/blob/main/README.md - it would be nice if I could assemble something a bit easier.
+
+There is a dev API running on my home network at http://192.168.0.48:9988/wp-json/jbs/v2/whisky which contains a more "rolled up" view of the data, where dates have been consolidated against bottles.
 ---
 
 ## Tech Stack
@@ -19,6 +21,8 @@ I'd like to deploy this to Github Pages, where I'll point a subdomain at it.  So
 - **Vite** (build tool)
 - **Vanilla CSS** with CSS custom properties (design tokens) + `<style scoped>` per SFC
 - **No Pinia** — singleton composables handle shared state
+- ensure the Tasteful Design skill is used during app setup
+- ensure the Ponytail plugin checks code over after code generation
 
 ---
 
