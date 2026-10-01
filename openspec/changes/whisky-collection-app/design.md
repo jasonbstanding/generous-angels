@@ -35,7 +35,7 @@ Routes: `#/` (Timeline), `#/gantt` (Gantt), `#/rankings` (Rankings).
 
 Filter state lives in query params on each route, e.g. `#/?year=2025&event=bought&distillery=Springbank`.
 
-**Why hash mode:** The app will be served as static files (likely from the WordPress host or a CDN). Hash mode requires no server-side URL rewriting — `index.html` is served for `/whisky/` and the router handles everything client-side.
+**Why hash mode:** The app will be served as static files from GitHub Pages via a custom subdomain. Hash mode requires no server-side URL rewriting — `index.html` is served and the router handles everything client-side. No `base` path configuration is needed since the app serves from the subdomain root (`/`).
 
 **Upgrade path:** Switching to history mode later requires only changing `createWebHashHistory` to `createWebHistory` in the router and configuring the server to rewrite `/whisky/*` → `/whisky/index.html`.
 
@@ -92,6 +92,12 @@ All colours, spacing, and typographic scale defined as CSS custom properties on 
 
 **Gantt row count** → 155+ rows is manageable without virtualization, but scrolling through all of them may feel unwieldy. Mitigation: the time window filter (year + event type) reduces visible rows significantly in practice.
 
-## Open Questions
+## Migration / Deployment
 
-- **Deployment target**: Where exactly will the built files be served from? This determines whether the WordPress host needs any config changes (rewrite rules, CORS headers) and whether hash mode is the right call long-term.
+1. `npm run build` produces `dist/`
+2. `git subtree push --prefix dist origin gh-pages` publishes to the `gh-pages` branch (use the force-push variant — `git push origin $(git subtree split --prefix dist HEAD):gh-pages --force` — when the branch history diverges after a dist clean)
+3. Configure the GitHub repo to serve from `gh-pages` and point the custom subdomain at it
+4. The `dist/` directory must not be in `.gitignore` for subtree push to track it
+5. CORS: the production API at `jasonbstanding.com` must allow the subdomain origin; the dev proxy sidesteps CORS locally
+
+The `"deploy"` npm script wraps steps 1–2: `npm run build && git subtree push --prefix dist origin gh-pages`.

@@ -51,3 +51,10 @@
 - [x] 7.5 Implement shelf time metric — average days from `date_bought` to `date_opened` per entity; exclude bottles without both dates; display `"N days (n=K)"` per row; sort descending (longest wait first) — verify entities with no qualifying bottles are absent
 - [x] 7.6 Implement recency metric — most recent `date_bought` per entity; exclude entities with no `date_bought`; sort descending (most recently acquired first) — verify correct ordering
 - [x] 7.7 Verify Rankings URL round-trip: set entity=bottler, metric=throughput, copy URL, open fresh, confirm correct view; verify clear on both selectors removes params and shows distillery/count defaults
+
+## 8. Deployment
+
+- [x] 8.1 Update Vite proxy target to `http://192.168.0.48:9988` so `npm run dev` hits the local consolidated-date API
+- [x] 8.2 Confirm `dist/` is not in `.gitignore` (required for `git subtree push`)
+- [x] 8.3 Add `"deploy"` script to `package.json`: `npm run build && git subtree push --prefix dist origin gh-pages`
+- [ ] 8.4 Configure GitHub Pages to serve from `gh-pages` branch and point the custom subdomain at it

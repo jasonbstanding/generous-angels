@@ -29,4 +29,4 @@ The existing whisky collection page at `/whisky/` is driven by a WordPress plugi
 - New repo: blank Vue 3 project scaffolded from scratch (no existing package.json)
 - External API dependency: `https://www.jasonbstanding.com/wp-json/jbs/v2/whisky` — read-only, 442 records, ~155 with date_bought (dates tracked from March 2024 onward; older records have null dates)
 - No changes to WordPress, the REST API, or any other system
-- Deployment target TBD; the app will eventually serve at or near `/whisky/`
+- Deployed to GitHub Pages; a custom subdomain will point at it. Build locally with `npm run build`, then push `dist/` to the `gh-pages` branch via `git subtree push`. No `base` path configuration needed — the app serves from the subdomain root
