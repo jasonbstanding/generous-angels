@@ -1,0 +1,97 @@
+:root {
+  /* Surfaces */
+  --color-bg: #faf8f5;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f3ede6;
+  --color-border: #e0d6cb;
+
+  /* Text */
+  --color-text: #2c1f0e;
+  --color-text-muted: #7a6a57;
+  --color-text-light: #a8977e;
+
+  /* Nav */
+  --color-nav-bg: #2c1f0e;
+  --color-nav-text: #e8e2d9;
+  --color-nav-active: #c2862c;
+
+  /* Gantt phases */
+  --color-shelf: #c7b8a5;
+  --color-shelf-border: #b0a090;
+  --color-drinking: #c2862c;
+  --color-drinking-border: #a06e1a;
+  --color-ongoing: #e5a43c;
+
+  /* State badges */
+  --color-state-in: #6b8cad;
+  --color-state-open: #c2862c;
+  --color-state-finished: #7a9a6b;
+
+  /* Feedback */
+  --color-error: #c0392b;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* Type */
+  --font-size-xs: 11px;
+  --font-size-sm: 13px;
+  --font-size-md: 15px;
+  --font-size-lg: 18px;
+  --font-size-xl: 22px;
+  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+
+  /* Shape */
+  --radius: 4px;
+  --radius-lg: 8px;
+
+  /* Nav height — used for sticky offset */
+  --nav-height: 48px;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  color: var(--color-text);
+  background: var(--color-bg);
+  line-height: 1.5;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+select {
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-1) var(--space-2);
+  cursor: pointer;
+}
+
+select:focus {
+  outline: 2px solid var(--color-nav-active);
+  outline-offset: 1px;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
