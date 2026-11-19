@@ -1,14 +1,14 @@
 :root {
   /* Surfaces */
-  --color-bg: #faf8f5;
+  --color-bg: #f5f5f4;
   --color-surface: #ffffff;
-  --color-surface-alt: #f3ede6;
-  --color-border: #e0d6cb;
+  --color-surface-alt: #eeeeec;
+  --color-border: #d4d4d0;
 
   /* Text */
-  --color-text: #2c1f0e;
-  --color-text-muted: #7a6a57;
-  --color-text-light: #a8977e;
+  --color-text: #1c1917;
+  --color-text-muted: #6b7280;
+  --color-text-light: #9ca3af;
 
   /* Nav */
   --color-nav-bg: #2c1f0e;
