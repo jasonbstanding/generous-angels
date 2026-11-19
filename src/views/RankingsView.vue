@@ -15,7 +15,7 @@
           <option value="count">Count</option>
           <option value="throughput">Throughput</option>
           <option value="shelf-time">Shelf Time</option>
-          <option value="recency">Recency</option>
+          <option value="last-acquired">Last Acquired</option>
         </select>
         <button v-if="metric !== 'count'" class="clear-btn" @click="clearMetric">✕ Clear</button>
       </div>
@@ -26,6 +26,7 @@
         :rows="rows"
         :entity-label="entity === 'distillery' ? 'Distillery' : 'Bottler'"
         :metric-label="metricLabel"
+        :metric="metric"
       />
     </div>
   </div>
@@ -43,7 +44,7 @@ const router = useRouter()
 const { bottles } = useWhiskyData()
 
 type Entity = 'distillery' | 'bottler'
-type Metric = 'count' | 'throughput' | 'shelf-time' | 'recency'
+type Metric = 'count' | 'throughput' | 'shelf-time' | 'last-acquired'
 
 const entity = computed<Entity>(() => (route.query.entity as Entity) ?? 'distillery')
 const metric = computed<Metric>(() => (route.query.metric as Metric) ?? 'count')
@@ -123,7 +124,7 @@ const rows = computed(() => {
     return result.sort((a, b) => b.avg - a.avg).map(({ name, value, bottles }) => ({ name, value, bottles }))
   }
 
-  // recency
+  // last-acquired
   const result: { name: string; value: string; latest: string; bottles: WhiskyBottle[] }[] = []
   for (const [name, bs] of groups) {
     const dates = bs.map(b => b.date_bought).filter(Boolean) as string[]
@@ -143,7 +144,7 @@ const metricLabel = computed(() => ({
   count: 'Bottles',
   throughput: 'Avg days to finish',
   'shelf-time': 'Avg days on shelf',
-  recency: 'Last acquired',
+  'last-acquired': 'Last acquired',
 }[metric.value]))
 </script>
 

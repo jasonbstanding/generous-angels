@@ -21,7 +21,9 @@
           <tr v-if="expandedRow === row.name" class="expanded-row">
             <td colspan="3">
               <ul class="bottle-list">
-                <li v-for="b in sortedBottles(row.bottles)" :key="b.id">{{ b.title }}</li>
+                <li v-for="item in expandedItems(row.bottles)" :key="item.id">
+                  {{ item.title }}<span v-if="item.detail" class="bottle-detail"> — {{ item.detail }}</span>
+                </li>
               </ul>
             </td>
           </tr>
@@ -36,10 +38,11 @@
 import { ref } from 'vue'
 import type { WhiskyBottle } from '../types'
 
-defineProps<{
+const props = defineProps<{
   rows: Array<{ name: string; value: string; bottles: WhiskyBottle[] }>
   entityLabel: string
   metricLabel: string
+  metric: 'count' | 'throughput' | 'shelf-time' | 'last-acquired'
 }>()
 
 const expandedRow = ref<string | null>(null)
@@ -48,15 +51,47 @@ function toggle(name: string) {
   expandedRow.value = expandedRow.value === name ? null : name
 }
 
-function maxDate(b: WhiskyBottle): string {
-  return [b.date_bought, b.date_opened, b.date_finished]
-    .filter(Boolean)
-    .sort()
-    .at(-1) ?? ''
+function daysBetween(a: string, b: string): number {
+  return Math.round((new Date(b).getTime() - new Date(a).getTime()) / 86_400_000)
 }
 
-function sortedBottles(bottles: WhiskyBottle[]): WhiskyBottle[] {
-  return [...bottles].sort((a, b) => maxDate(b).localeCompare(maxDate(a)))
+const stateLabel: Record<WhiskyBottle['state'], string> = {
+  in: 'on shelf',
+  open: 'open',
+  finished: 'finished',
+}
+
+interface DisplayItem { id: number; title: string; detail?: string }
+
+function expandedItems(bottles: WhiskyBottle[]): DisplayItem[] {
+  if (props.metric === 'count') {
+    return [...bottles]
+      .sort((a, b) => a.title.localeCompare(b.title))
+      .map(b => ({ id: b.id, title: b.title, detail: stateLabel[b.state] }))
+  }
+  if (props.metric === 'throughput') {
+    return bottles
+      .filter(b => b.date_opened && b.date_finished)
+      .map(b => ({ id: b.id, title: b.title, days: daysBetween(b.date_opened!, b.date_finished!) }))
+      .sort((a, b) => a.days - b.days)
+      .map(({ id, title, days }) => ({ id, title, detail: `${days} days` }))
+  }
+  if (props.metric === 'shelf-time') {
+    return bottles
+      .filter(b => b.date_bought && b.date_opened)
+      .map(b => ({ id: b.id, title: b.title, days: daysBetween(b.date_bought!, b.date_opened!) }))
+      .sort((a, b) => b.days - a.days)
+      .map(({ id, title, days }) => ({ id, title, detail: `${days} days` }))
+  }
+  // last-acquired
+  return [...bottles]
+    .filter(b => b.date_bought)
+    .sort((a, b) => b.date_bought!.localeCompare(a.date_bought!))
+    .map(b => ({
+      id: b.id,
+      title: b.title,
+      detail: new Date(b.date_bought!).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
+    }))
 }
 </script>
 
@@ -106,6 +141,10 @@ function sortedBottles(bottles: WhiskyBottle[]): WhiskyBottle[] {
   gap: var(--space-2);
 }
 
+.table th.col-name {
+  padding-left: calc(var(--space-3) + 10px + var(--space-2));
+}
+
 .expand-icon {
   font-size: var(--font-size-xs);
   color: var(--color-text-muted);
@@ -137,6 +176,10 @@ function sortedBottles(bottles: WhiskyBottle[]): WhiskyBottle[] {
 .bottle-list li {
   font-size: var(--font-size-xs);
   color: var(--color-text-muted);
+}
+
+.bottle-detail {
+  opacity: 0.7;
 }
 
 .empty {

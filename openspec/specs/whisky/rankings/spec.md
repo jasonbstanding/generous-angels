@@ -46,11 +46,11 @@ The ranking SHALL support a shelf time metric showing the average number of days
 - **WHEN** an entity has no bottles with both date_bought and date_opened
 - **THEN** that entity does not appear in the shelf time ranking
 
-### Requirement: Recency metric
-The ranking SHALL support a recency metric showing when the most recent bottle from each entity was acquired (latest date_bought). Entities with no date_bought on any bottle SHALL be excluded.
+### Requirement: Last Acquired metric
+The ranking SHALL support a Last Acquired metric showing when the most recent bottle from each entity was acquired (latest date_bought). Entities with no date_bought on any bottle SHALL be excluded.
 
-#### Scenario: Recency ranking
-- **WHEN** the user selects the recency metric
+#### Scenario: Last Acquired ranking
+- **WHEN** the user selects the Last Acquired metric
 - **THEN** entities are ordered by their most recent date_bought descending (most recently acquired first)
 
 ### Requirement: URL-addressable ranking state
@@ -65,11 +65,29 @@ The active entity dimension and metric SHALL be encoded in the page URL as query
 - **THEN** the selection reverts to its default (distillery; count) and the URL parameter is removed
 
 ### Requirement: Expandable row detail
-Clicking a ranking row SHALL expand it to show an indented list of bottle titles attributed to that entity, sorted by each bottle's most recent lifecycle date descending. Clicking the same row again SHALL collapse it. Clicking a different row SHALL collapse the previously expanded row and expand the new one.
+Clicking a ranking row SHALL expand it to show a list of bottles attributed to that entity. The list content varies by metric:
+- **Count**: All entity bottles, each showing its current status (on shelf / open / finished)
+- **Throughput**: Only bottles with both date_opened and date_finished, sorted fastest first, each showing its individual days-to-finish
+- **Shelf Time**: Only bottles with both date_bought and date_opened, sorted longest first, each showing its individual shelf time in days
+- **Last Acquired**: All entity bottles sorted by date_bought descending, each showing its purchase date
 
-#### Scenario: Row expanded on click
-- **WHEN** the user clicks a ranking row
-- **THEN** an indented list of bottle titles for that entity appears beneath the row, sorted by most recent lifecycle date descending
+Clicking the same row again SHALL collapse it. Clicking a different row SHALL collapse the previously expanded row and expand the new one.
+
+#### Scenario: Count expanded list shows bottle status
+- **WHEN** the user expands a row in Count metric
+- **THEN** each bottle title is shown alongside its current status (on shelf, open, or finished)
+
+#### Scenario: Throughput expanded list shows qualifying bottles with durations
+- **WHEN** the user expands a row in Throughput metric
+- **THEN** only bottles with both date_opened and date_finished are shown, each with their individual days-to-finish
+
+#### Scenario: Shelf Time expanded list shows qualifying bottles with durations
+- **WHEN** the user expands a row in Shelf Time metric
+- **THEN** only bottles with both date_bought and date_opened are shown, each with their individual shelf time in days
+
+#### Scenario: Last Acquired expanded list shows bottles with purchase dates
+- **WHEN** the user expands a row in Last Acquired metric
+- **THEN** all entity bottles are shown sorted by date_bought descending, each with its purchase date
 
 #### Scenario: Row collapsed on second click
 - **WHEN** the user clicks an already-expanded row
