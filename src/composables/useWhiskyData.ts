@@ -1,59 +1,32 @@
-import { ref, computed } from 'vue'
-import type { WhiskyRecord } from '@/types/whisky'
+import { ref, type Ref } from 'vue'
+import type { WhiskyBottle } from '../types'
 
-const API_URL = 'https://www.jasonbstanding.com/wp-json/jbs/v2/whisky'
+const API_URL = import.meta.env.DEV
+  ? '/wp-json/jbs/v2/whisky'
+  : 'https://www.jasonbstanding.com/wp-json/jbs/v2/whisky'
 
-// Module-level singleton — only one fetch regardless of how many components call this
-const records = ref<WhiskyRecord[]>([])
+const bottles: Ref<WhiskyBottle[]> = ref([])
 const loading = ref(false)
-const error = ref<string | null>(null)
+const error: Ref<string | null> = ref(null)
 let fetched = false
 
 export function useWhiskyData() {
-  const distilleryList = computed<string[]>(() => {
-    const seen = new Set<string>()
-    for (const r of records.value) {
-      if (r.distillery) seen.add(r.distillery)
-    }
-    return [...seen].sort((a, b) => a.localeCompare(b))
-  })
-
-  const bottlerList = computed<string[]>(() => {
-    const seen = new Set<string>()
-    for (const r of records.value) {
-      if (r.bottler) seen.add(r.bottler)
-    }
-    return [...seen].sort((a, b) => a.localeCompare(b))
-  })
-
-  const availableYears = computed<number[]>(() => {
-    const seen = new Set<number>()
-    for (const r of records.value) {
-      for (const d of [r.date_bought, r.date_opened, r.date_finished]) {
-        if (d) seen.add(Number(d.slice(0, 4)))
-      }
-    }
-    return [...seen].sort((a, b) => b - a)
-  })
-
-  async function refresh() {
+  if (!fetched) {
+    fetched = true
     loading.value = true
-    error.value = null
-    try {
-      const res = await fetch(API_URL)
-      if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`)
-      records.value = await res.json()
-      fetched = true
-    } catch (e) {
-      error.value = e instanceof Error ? e.message : 'Failed to load collection data'
-    } finally {
-      loading.value = false
-    }
+    fetch(API_URL)
+      .then(r => {
+        if (!r.ok) throw new Error(`API error ${r.status}`)
+        return r.json()
+      })
+      .then((data: WhiskyBottle[]) => {
+        bottles.value = data
+        loading.value = false
+      })
+      .catch((e: Error) => {
+        error.value = e.message
+        loading.value = false
+      })
   }
-
-  if (!fetched && !loading.value) {
-    refresh()
-  }
-
-  return { records, loading, error, distilleryList, bottlerList, availableYears, refresh }
+  return { bottles, loading, error }
 }

@@ -1,43 +1,97 @@
 <template>
-  <TopNav />
-  <FilterBar v-if="activeView === 'timeline'" />
+  <header class="nav">
+    <span class="nav-brand">Jason B. Drammin'</span>
+    <nav class="nav-links">
+      <router-link to="/">Timeline</router-link>
+      <router-link to="/gantt">Gantt</router-link>
+      <router-link to="/rankings">Rankings</router-link>
+    </nav>
+    <a class="nav-attribution" href="https://jasonbstanding.com" target="_blank" rel="noopener">Powered by jasonbstanding.com</a>
+  </header>
 
-  <main class="app-main" :class="{ 'app-main--no-filter': activeView === 'rankings' }">
-    <TimelineView
-      v-if="activeView === 'timeline'"
-      @open-lightbox="lightboxBottle = $event"
-    />
-    <RankingsView v-else />
+  <main class="main-content">
+    <div v-if="loading" class="status-msg">Loading collection…</div>
+    <div v-else-if="error" class="status-msg error">Failed to load: {{ error }}</div>
+    <router-view v-else />
   </main>
-
-  <ImageLightbox
-    :bottle="lightboxBottle"
-    @close="lightboxBottle = null"
-  />
 </template>
 
 <script setup lang="ts">
-import { ref, provide } from 'vue'
-import TopNav from '@/components/layout/TopNav.vue'
-import FilterBar from '@/components/layout/FilterBar.vue'
-import TimelineView from '@/components/timeline/TimelineView.vue'
-import RankingsView from '@/components/rankings/RankingsView.vue'
-import ImageLightbox from '@/components/lightbox/ImageLightbox.vue'
-import type { WhiskyWithAnchor } from '@/types/whisky'
+import { useWhiskyData } from './composables/useWhiskyData'
 
-const activeView = ref<'timeline' | 'rankings'>('timeline')
-provide('activeView', activeView)
-
-const lightboxBottle = ref<WhiskyWithAnchor | null>(null)
+const { loading, error } = useWhiskyData()
 </script>
 
 <style scoped>
-.app-main {
-  padding-top: calc(var(--nav-height) + var(--filter-height));
-  min-height: 100dvh;
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: var(--nav-height);
+  background: var(--color-nav-bg);
+  color: var(--color-nav-text);
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  padding: 0 var(--space-6);
 }
 
-.app-main--no-filter {
-  padding-top: var(--nav-height);
+.nav-brand {
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--color-nav-text);
+  opacity: 0.9;
+}
+
+.nav-links {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.nav-links a {
+  color: var(--color-nav-text);
+  text-decoration: none;
+  font-size: var(--font-size-sm);
+  opacity: 0.7;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius);
+  transition: opacity 0.1s, color 0.1s;
+}
+
+.nav-links a:hover {
+  opacity: 1;
+}
+
+.nav-links a.router-link-active {
+  opacity: 1;
+  color: var(--color-nav-active);
+}
+
+.nav-attribution {
+  margin-left: auto;
+  font-size: var(--font-size-xs);
+  color: var(--color-nav-text);
+  opacity: 0.45;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.nav-attribution:hover {
+  opacity: 0.75;
+}
+
+.main-content {
+  min-height: calc(100vh - var(--nav-height));
+}
+
+.status-msg {
+  padding: var(--space-8) var(--space-6);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-md);
+}
+
+.status-msg.error {
+  color: var(--color-error);
 }
 </style>

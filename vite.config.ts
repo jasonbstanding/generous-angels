@@ -1,10 +1,14 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import { resolve } from 'path'
 
 export default defineConfig({
   plugins: [vue()],
-  resolve: {
-    alias: { '@': resolve(__dirname, 'src') },
+  server: {
+    proxy: {
+      '/wp-json': {
+        target: 'http://192.168.0.48:9988',
+        changeOrigin: true,
+      },
+    },
   },
 })
