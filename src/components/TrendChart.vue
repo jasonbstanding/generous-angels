@@ -13,6 +13,7 @@
         class="bar-col"
         :title="`${m.label}: ${m.count} bottle${m.count !== 1 ? 's' : ''}`"
       >
+        <span class="bar-count">{{ m.count || '' }}</span>
         <div class="bar" :style="{ '--h': `${m.pct}%` }" />
         <div v-if="m.isJan" class="year-label">{{ m.year }}</div>
       </div>
@@ -107,6 +108,16 @@ const months = computed((): MonthBar[] => {
   height: 100%;
   position: relative;
   min-width: 2px;
+  overflow: hidden;
+}
+
+.bar-count {
+  font-size: 9px;
+  line-height: 1;
+  text-align: center;
+  width: 100%;
+  color: var(--color-text-muted);
+  pointer-events: none;
 }
 
 .bar {
