@@ -1,11 +1,12 @@
 <template>
   <header class="nav">
-    <span class="nav-brand">Whisky Collection</span>
+    <span class="nav-brand">Jason B. Drammin'</span>
     <nav class="nav-links">
       <router-link to="/">Timeline</router-link>
       <router-link to="/gantt">Gantt</router-link>
       <router-link to="/rankings">Rankings</router-link>
     </nav>
+    <a class="nav-attribution" href="https://jasonbstanding.com" target="_blank" rel="noopener">Powered by jasonbstanding.com</a>
   </header>
 
   <main class="main-content">
@@ -65,6 +66,19 @@ const { loading, error } = useWhiskyData()
 .nav-links a.router-link-active {
   opacity: 1;
   color: var(--color-nav-active);
+}
+
+.nav-attribution {
+  margin-left: auto;
+  font-size: var(--font-size-xs);
+  color: var(--color-nav-text);
+  opacity: 0.45;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.nav-attribution:hover {
+  opacity: 0.75;
 }
 
 .main-content {
