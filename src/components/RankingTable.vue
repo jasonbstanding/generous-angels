@@ -9,11 +9,23 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(row, i) in rows" :key="row.name">
-          <td class="col-rank">{{ i + 1 }}</td>
-          <td class="col-name">{{ row.name }}</td>
-          <td class="col-value">{{ row.value }}</td>
-        </tr>
+        <template v-for="(row, i) in rows" :key="row.name">
+          <tr class="data-row" @click="toggle(row.name)">
+            <td class="col-rank">{{ i + 1 }}</td>
+            <td class="col-name">
+              <span class="expand-icon">{{ expandedRow === row.name ? '▾' : '▸' }}</span>
+              {{ row.name }}
+            </td>
+            <td class="col-value">{{ row.value }}</td>
+          </tr>
+          <tr v-if="expandedRow === row.name" class="expanded-row">
+            <td colspan="3">
+              <ul class="bottle-list">
+                <li v-for="b in sortedBottles(row.bottles)" :key="b.id">{{ b.title }}</li>
+              </ul>
+            </td>
+          </tr>
+        </template>
       </tbody>
     </table>
     <p v-else class="empty">No data for this metric.</p>
@@ -21,11 +33,31 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
+import type { WhiskyBottle } from '../types'
+
 defineProps<{
-  rows: Array<{ name: string; value: string }>
+  rows: Array<{ name: string; value: string; bottles: WhiskyBottle[] }>
   entityLabel: string
   metricLabel: string
 }>()
+
+const expandedRow = ref<string | null>(null)
+
+function toggle(name: string) {
+  expandedRow.value = expandedRow.value === name ? null : name
+}
+
+function maxDate(b: WhiskyBottle): string {
+  return [b.date_bought, b.date_opened, b.date_finished]
+    .filter(Boolean)
+    .sort()
+    .at(-1) ?? ''
+}
+
+function sortedBottles(bottles: WhiskyBottle[]): WhiskyBottle[] {
+  return [...bottles].sort((a, b) => maxDate(b).localeCompare(maxDate(a)))
+}
 </script>
 
 <style scoped>
@@ -55,7 +87,11 @@ defineProps<{
   border-bottom: 1px solid var(--color-border);
 }
 
-.table tr:hover td {
+.data-row {
+  cursor: pointer;
+}
+
+.data-row:hover td {
   background: var(--color-surface-alt);
 }
 
@@ -64,9 +100,42 @@ defineProps<{
   color: var(--color-text-muted);
 }
 
+.col-name {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.expand-icon {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  width: 10px;
+  flex-shrink: 0;
+}
+
 .col-value {
   text-align: right;
   font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+}
+
+.expanded-row td {
+  background: var(--color-surface-alt);
+  border-bottom: 1px solid var(--color-border);
+  padding: var(--space-2) var(--space-3) var(--space-3);
+}
+
+.bottle-list {
+  margin: 0;
+  padding: 0 0 0 var(--space-6);
+  list-style: disc;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.bottle-list li {
+  font-size: var(--font-size-xs);
   color: var(--color-text-muted);
 }
 

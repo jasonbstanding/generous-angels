@@ -97,34 +97,34 @@ const rows = computed(() => {
 
   if (metric.value === 'count') {
     return [...groups.entries()]
-      .map(([name, bs]) => ({ name, value: String(bs.length) }))
+      .map(([name, bs]) => ({ name, value: String(bs.length), bottles: bs }))
       .sort((a, b) => Number(b.value) - Number(a.value))
   }
 
   if (metric.value === 'throughput') {
-    const result: { name: string; value: string; avg: number }[] = []
+    const result: { name: string; value: string; avg: number; bottles: WhiskyBottle[] }[] = []
     for (const [name, bs] of groups) {
       const qualified = bs.filter(b => b.date_opened && b.date_finished)
       if (!qualified.length) continue
       const avg = qualified.reduce((s, b) => s + daysBetween(b.date_opened!, b.date_finished!), 0) / qualified.length
-      result.push({ name, avg, value: `${Math.round(avg)} days (n=${qualified.length})` })
+      result.push({ name, avg, value: `${Math.round(avg)} days (n=${qualified.length})`, bottles: bs })
     }
-    return result.sort((a, b) => a.avg - b.avg).map(({ name, value }) => ({ name, value }))
+    return result.sort((a, b) => a.avg - b.avg).map(({ name, value, bottles }) => ({ name, value, bottles }))
   }
 
   if (metric.value === 'shelf-time') {
-    const result: { name: string; value: string; avg: number }[] = []
+    const result: { name: string; value: string; avg: number; bottles: WhiskyBottle[] }[] = []
     for (const [name, bs] of groups) {
       const qualified = bs.filter(b => b.date_bought && b.date_opened)
       if (!qualified.length) continue
       const avg = qualified.reduce((s, b) => s + daysBetween(b.date_bought!, b.date_opened!), 0) / qualified.length
-      result.push({ name, avg, value: `${Math.round(avg)} days (n=${qualified.length})` })
+      result.push({ name, avg, value: `${Math.round(avg)} days (n=${qualified.length})`, bottles: bs })
     }
-    return result.sort((a, b) => b.avg - a.avg).map(({ name, value }) => ({ name, value }))
+    return result.sort((a, b) => b.avg - a.avg).map(({ name, value, bottles }) => ({ name, value, bottles }))
   }
 
   // recency
-  const result: { name: string; value: string; latest: string }[] = []
+  const result: { name: string; value: string; latest: string; bottles: WhiskyBottle[] }[] = []
   for (const [name, bs] of groups) {
     const dates = bs.map(b => b.date_bought).filter(Boolean) as string[]
     if (!dates.length) continue
@@ -133,9 +133,10 @@ const rows = computed(() => {
       name,
       latest,
       value: new Date(latest).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
+      bottles: bs,
     })
   }
-  return result.sort((a, b) => b.latest.localeCompare(a.latest)).map(({ name, value }) => ({ name, value }))
+  return result.sort((a, b) => b.latest.localeCompare(a.latest)).map(({ name, value, bottles }) => ({ name, value, bottles }))
 })
 
 const metricLabel = computed(() => ({
