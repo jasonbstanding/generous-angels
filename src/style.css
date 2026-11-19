@@ -16,11 +16,11 @@
   --color-nav-active: #c2862c;
 
   /* Gantt phases */
-  --color-shelf: #c7b8a5;
-  --color-shelf-border: #b0a090;
-  --color-drinking: #c2862c;
-  --color-drinking-border: #a06e1a;
-  --color-ongoing: #e5a43c;
+  --color-gantt-open: #4e9a6a;
+  --color-gantt-open-border: #3a7a52;
+  --color-gantt-finished: #7b6fad;
+  --color-gantt-finished-border: #5e539a;
+  --color-gantt-dot: #94a3b8;
 
   /* State badges */
   --color-state-in: #6b8cad;

@@ -56,12 +56,8 @@ const eventDateField: Record<EventType, keyof WhiskyBottle> = {
   finished: 'date_finished',
 }
 
-function hasAnyDate(b: WhiskyBottle): boolean {
-  return !!(b.date_bought || b.date_opened || b.date_finished)
-}
-
 function sortKey(b: WhiskyBottle): string {
-  return b.date_bought ?? b.date_opened ?? b.date_finished ?? ''
+  return b.date_opened ?? ''
 }
 
 const sorted = computed(() => {
@@ -70,7 +66,7 @@ const sorted = computed(() => {
 
   return bottles.value
     .filter(b => {
-      if (!hasAnyDate(b)) return false
+      if (!b.date_opened) return false
       if (!year && !event) return true
       if (event) {
         const d = b[eventDateField[event]] as string | null

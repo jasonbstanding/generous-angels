@@ -6,38 +6,38 @@ Lifecycle Gantt chart that visualises each bottle as a horizontal bar spanning i
 
 ## Requirements
 
-### Requirement: Two-phase lifecycle bars
-Each bottle SHALL be rendered as a horizontal bar on a shared time axis. The bar SHALL visually distinguish the shelf phase (date_bought to date_opened) from the drinking phase (date_opened to date_finished, or date_opened to today if the bottle is still open).
+### Requirement: Open-phase bar
+Only bottles with `date_opened` SHALL appear on the Gantt. Each bottle SHALL be rendered as a single horizontal bar on the shared time axis. If the bottle has `date_finished`, the bar SHALL span `date_opened` to `date_finished` and be rendered in a finished colour (purple). If the bottle has no `date_finished` (state is open), the bar SHALL span `date_opened` to today and be rendered in an ongoing colour (green).
 
-#### Scenario: Bottle with all three dates
-- **WHEN** a bottle has date_bought, date_opened, and date_finished
-- **THEN** the bar shows a muted segment from date_bought to date_opened, followed by a warm segment from date_opened to date_finished
+#### Scenario: Finished bottle bar
+- **WHEN** a bottle has both `date_opened` and `date_finished`
+- **THEN** the bar spans from `date_opened` to `date_finished` in the finished (purple) colour
 
-#### Scenario: Currently open bottle
-- **WHEN** a bottle has date_bought and date_opened but no date_finished (state is open)
-- **THEN** the bar shows a muted segment from date_bought to date_opened, and a warm segment from date_opened extending to today with a visual indicator that it is ongoing
+#### Scenario: Open bottle bar
+- **WHEN** a bottle has `date_opened` but no `date_finished`
+- **THEN** the bar spans from `date_opened` to today in the ongoing (green) colour
 
-#### Scenario: Unopened bottle with date_bought
-- **WHEN** a bottle has date_bought but no date_opened (state is in)
-- **THEN** the bar shows only a muted segment from date_bought extending to today
-
-### Requirement: Partial bar handling for missing dates
-Bottles missing one or more lifecycle dates SHALL still appear on the Gantt anchored to their available dates. Bottles with no dates at all SHALL be excluded.
-
-#### Scenario: Bottle with only date_opened
-- **WHEN** a bottle has date_opened but no date_bought
-- **THEN** the bar begins at date_opened and shows only the drinking phase (warm segment)
-
-#### Scenario: Bottle with no dates
-- **WHEN** a bottle has no date_bought, no date_opened, and no date_finished
+#### Scenario: Bottle without date_opened excluded
+- **WHEN** a bottle has no `date_opened` (regardless of other dates)
 - **THEN** the bottle does not appear on the Gantt
 
-### Requirement: Default sort by date_bought
-Bottles SHALL be sorted by date_bought ascending by default, with date_opened used as a fallback when date_bought is absent.
+### Requirement: Bought-date dot marker
+When a displayed bottle has `date_bought`, a 5px-wide dot marker SHALL be rendered on the shared time axis at the position corresponding to `date_bought`.
+
+#### Scenario: Dot shown for bottle with date_bought
+- **WHEN** a bottle with `date_opened` also has `date_bought`
+- **THEN** a 5px dot appears on the axis at the `date_bought` position for that row
+
+#### Scenario: No dot when date_bought absent
+- **WHEN** a bottle with `date_opened` has no `date_bought`
+- **THEN** no dot marker appears for that row
+
+### Requirement: Default sort by date_opened
+Bottles SHALL be sorted by `date_opened` ascending by default.
 
 #### Scenario: Sort order on load
 - **WHEN** the user loads the Gantt with no sort filter active
-- **THEN** bottles appear in ascending order of date_bought (or date_opened where date_bought is absent), earliest at the top
+- **THEN** bottles appear in ascending order of `date_opened`, earliest at the top
 
 ### Requirement: Year and event type filter
 The Gantt SHALL support the same year and event type (bought, opened, finished) filter as the Timeline view. Each filter SHALL have a clear option.

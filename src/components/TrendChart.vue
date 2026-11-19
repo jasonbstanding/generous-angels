@@ -113,7 +113,7 @@ const months = computed((): MonthBar[] => {
   width: 100%;
   height: var(--h, 0%);
   min-height: 1px;
-  background: var(--color-drinking);
+  background: var(--color-nav-active);
   border-radius: 1px 1px 0 0;
   transition: opacity 0.1s;
 }
