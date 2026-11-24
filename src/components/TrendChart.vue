@@ -1,23 +1,28 @@
 <template>
   <div class="trend-wrapper">
     <h2 class="trend-title">Purchases over time</h2>
-    <div
-      v-if="months.length"
-      class="chart"
-      role="img"
-      :aria-label="`Monthly purchase counts from ${months[0].label} to ${months[months.length - 1].label}`"
-    >
+    <template v-if="months.length">
       <div
-        v-for="m in months"
-        :key="m.key"
-        class="bar-col"
-        :title="`${m.label}: ${m.count} bottle${m.count !== 1 ? 's' : ''}`"
+        class="chart"
+        role="img"
+        :aria-label="`Monthly purchase counts from ${months[0].label} to ${months[months.length - 1].label}`"
       >
-        <span class="bar-count">{{ m.count || '' }}</span>
-        <div class="bar" :style="{ '--h': `${m.pct}%` }" />
-        <div v-if="m.isJan" class="year-label">{{ m.year }}</div>
+        <div
+          v-for="m in months"
+          :key="m.key"
+          class="bar-col"
+          :title="`${m.label}: ${m.count} bottle${m.count !== 1 ? 's' : ''}`"
+        >
+          <span class="bar-count">{{ m.count || '' }}</span>
+          <div class="bar" :style="{ '--h': `${m.pct}%` }" />
+        </div>
       </div>
-    </div>
+      <div class="year-axis">
+        <div v-for="m in months" :key="m.key" class="year-cell" :class="{ tick: m.isJan }">
+          <span v-if="m.isJan">{{ m.year }}</span>
+        </div>
+      </div>
+    </template>
     <p v-else class="no-data">No purchase dates recorded yet.</p>
   </div>
 </template>
@@ -133,13 +138,25 @@ const months = computed((): MonthBar[] => {
   opacity: 0.7;
 }
 
-.year-label {
-  position: absolute;
-  bottom: -16px;
+.year-axis {
+  display: flex;
+  gap: 1px;
+  margin-top: 3px;
+}
+
+.year-cell {
+  flex: 1;
+  min-width: 2px;
   font-size: var(--font-size-xs);
   color: var(--color-text-muted);
   white-space: nowrap;
+  overflow: visible;
   pointer-events: none;
+}
+
+.year-cell.tick {
+  border-left: 1px solid var(--color-border);
+  padding-left: 2px;
 }
 
 .no-data {

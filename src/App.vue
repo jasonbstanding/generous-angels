@@ -3,7 +3,7 @@
     <span class="nav-brand">Jason B. Drammin'</span>
     <nav class="nav-links">
       <router-link to="/">Timeline</router-link>
-      <router-link to="/gantt">Gantt</router-link>
+      <router-link to="/gantt">Progress</router-link>
       <router-link to="/rankings">Rankings</router-link>
     </nav>
     <a class="nav-attribution" href="https://jasonbstanding.com" target="_blank" rel="noopener">Powered by jasonbstanding.com</a>

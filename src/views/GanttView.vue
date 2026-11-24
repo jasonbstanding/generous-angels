@@ -56,13 +56,16 @@ const eventDateField: Record<EventType, keyof WhiskyBottle> = {
   finished: 'date_finished',
 }
 
-function sortKey(b: WhiskyBottle): string {
-  return b.date_opened ?? ''
-}
-
 const sorted = computed(() => {
   const year = (route.query.year as string) ?? ''
   const event = (route.query.event as EventType | '') ?? ''
+
+  const sortDate = (b: WhiskyBottle): string => {
+    if (event === 'bought') return b.date_bought ?? ''
+    if (event === 'opened') return b.date_opened ?? ''
+    if (event === 'finished') return b.date_finished ?? ''
+    return b.date_finished ?? b.date_bought ?? ''
+  }
 
   return bottles.value
     .filter(b => {
@@ -80,7 +83,7 @@ const sorted = computed(() => {
       )
     })
     .slice()
-    .sort((a, b) => sortKey(a).localeCompare(sortKey(b)))
+    .sort((a, b) => sortDate(b).localeCompare(sortDate(a)))
 })
 
 const startLabel = computed(() => {
