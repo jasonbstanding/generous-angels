@@ -23,9 +23,9 @@
   --color-gantt-dot: #94a3b8;
 
   /* State badges */
-  --color-state-in: #6b8cad;
-  --color-state-open: #c2862c;
-  --color-state-finished: #7a9a6b;
+  --color-state-in: #4a7c59;
+  --color-state-open: #7b5ea7;
+  --color-state-finished: #8b3a3a;
 
   /* Feedback */
   --color-error: #c0392b;

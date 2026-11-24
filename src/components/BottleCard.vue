@@ -1,5 +1,5 @@
 <template>
-  <article class="card">
+  <article class="card" :class="`state-bg-${bottle.state}`">
     <div class="card-img-wrap" @click="showModal = true">
       <img
         v-if="bottle.image_sml"
@@ -13,8 +13,8 @@
     <div class="card-body">
       <h3 class="card-title">{{ bottle.title }}</h3>
       <div class="card-meta">
-        <span v-if="bottle.distillery" class="tag">{{ bottle.distillery }}</span>
-        <span v-if="bottle.bottler" class="tag tag-bottler">{{ bottle.bottler }}</span>
+        <span v-if="bottle.distillery" class="tag" @click="setFilter('distillery', bottle.distillery!)">{{ bottle.distillery }}</span>
+        <span v-if="bottle.bottler" class="tag tag-bottler" @click="setFilter('bottler', bottle.bottler!)">{{ bottle.bottler }}</span>
         <span class="tag" :class="`state-${bottle.state}`">{{ bottle.state }}</span>
       </div>
       <div class="card-dates">
@@ -41,12 +41,19 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import type { WhiskyBottle } from '../types'
 import ImageModal from './ImageModal.vue'
 
 defineProps<{ bottle: WhiskyBottle }>()
 
+const route = useRoute()
+const router = useRouter()
 const showModal = ref(false)
+
+function setFilter(key: 'distillery' | 'bottler', val: string) {
+  router.replace({ query: { ...route.query, [key]: val } })
+}
 
 function fmt(d: string): string {
   return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
@@ -117,6 +124,11 @@ function fmt(d: string): string {
   border-radius: 20px;
   font-size: var(--font-size-xs);
   color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.tag:hover {
+  opacity: 0.75;
 }
 
 .tag-bottler {
@@ -137,6 +149,10 @@ function fmt(d: string): string {
   color: var(--color-state-finished);
   border-color: var(--color-state-finished);
 }
+
+.state-bg-in { background: rgba(74, 124, 89, 0.26); }
+.state-bg-open { background: rgba(123, 94, 167, 0.26); }
+.state-bg-finished { background: rgba(139, 58, 58, 0.26); }
 
 .card-dates {
   display: flex;
