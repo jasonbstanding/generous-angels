@@ -95,3 +95,33 @@ When a user clicks a bottle's thumbnail image, a modal SHALL open displaying the
 #### Scenario: Modal dismissed by Escape
 - **WHEN** the modal is open and the user presses the Escape key
 - **THEN** the modal closes
+
+### Requirement: Clickable distillery and bottler tags
+Each bottle card SHALL display the distillery and bottler values as interactive tags. Clicking a distillery tag SHALL apply that distillery as the active distillery filter, exactly as selecting it from the distillery dropdown would. Clicking a bottler tag SHALL apply that bottler as the active bottler filter, exactly as selecting it from the bottler dropdown would.
+
+#### Scenario: Distillery tag clicked
+- **WHEN** the user clicks a distillery tag on a bottle card
+- **THEN** the `?distillery=` URL parameter is set to that distillery's value and the card list is filtered to that distillery
+
+#### Scenario: Bottler tag clicked
+- **WHEN** the user clicks a bottler tag on a bottle card
+- **THEN** the `?bottler=` URL parameter is set to that bottler's value and the card list is filtered to that bottler
+
+#### Scenario: Tag click preserves other active filters
+- **WHEN** the user clicks a distillery tag while a year filter is already active
+- **THEN** the year filter remains active and the distillery filter is added alongside it
+
+### Requirement: State-based card background tint
+Each bottle card's background SHALL be visually tinted to reflect the bottle's lifecycle state: a green tint for bottles that are in stock (state: in), a purple tint for bottles that are open (state: open), and a red tint for bottles that are finished (state: finished). The tint SHALL be subtle enough that text and other card elements remain easily legible.
+
+#### Scenario: In-stock card tint
+- **WHEN** a bottle's state is in
+- **THEN** the card background has a green tint
+
+#### Scenario: Open card tint
+- **WHEN** a bottle's state is open
+- **THEN** the card background has a purple tint
+
+#### Scenario: Finished card tint
+- **WHEN** a bottle's state is finished
+- **THEN** the card background has a red tint
